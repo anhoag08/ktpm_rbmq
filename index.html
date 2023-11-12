@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RabbitMQ Message Sender and Consumer</title>
+    <style>
+      /* Add your CSS styles here for better layout */
+      .section {
+        display: inline-block;
+        vertical-align: top;
+        padding: 10px;
+      }
+
+      .exchange-type {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>RabbitMQ Image Resize Producer And Consumer</h1>
+
+    <!-- Sender Section -->
+    <div class="section">
+      <h2>Image Resolution & URL</h2>
+      <form id="sender-form">
+        <div class="resolution-options">
+          <label>Resolution:</label>
+          <input type="checkbox" id="resolution1" name="resolution" value="2560x1440">
+          <label for="resolution1">2560x1440</label>
+          <input type="checkbox" id="resolution2" name="resolution" value="1920x1080">
+          <label for="resolution2">1920x1080</label>
+          <input type="checkbox" id="resolution3" name="resolution" value="1600x900">
+          <label for="resolution3">1600x900</label>
+          <input type="checkbox" id="resolution4" name="resolution" value="1280x720">
+          <label for "resolution4">1280x720</label>
+        </div>
+        <label for="message">Image URL:</label>
+        <textarea id="sender-message" name="sender-message" required></textarea><br /><br />
+        <button type="submit" id="sender-button">Send Message</button>
+      </form>
+    </div>
+
+    <script>
+      const senderForm = document.getElementById("sender-form");
+      const senderButton = document.getElementById("sender-button");
+      const socket = new WebSocket('ws://localhost:3000'); // WebSocket server address
+
+    
+      senderForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+    
+        // Get the selected resolutions
+        const selectedResolutions = [];
+        const resolutionCheckboxes = document.querySelectorAll('input[name="resolution"]:checked');
+        resolutionCheckboxes.forEach((checkbox) => {
+          selectedResolutions.push(checkbox.value);
+        });
+    
+        // Get the image URL
+        const imageUrl = document.getElementById("sender-message").value;
+    
+        // Handle the selected resolutions and URL as needed
+        if (selectedResolutions.length === 0) {
+          alert("Please select at least one resolution.");
+        } else {
+          // You can send the resolutions and URL to your server or perform any other action here.
+          // For demonstration, we'll display the selected resolutions in an alert.
+          socket.send(JSON.stringify({selectedResolutions, imageUrl}));
+        }
+      });
+    </script>
+  </body>
+</html>
