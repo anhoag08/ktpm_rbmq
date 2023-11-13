@@ -4,6 +4,17 @@
     <title>RabbitMQ Message Sender and Consumer</title>
     <style>
       /* Add your CSS styles here for better layout */
+      @font-face {
+        font-family: Nunito;
+        src: url(Nunito.ttf);
+      }
+
+      body {
+        font-family: Nunito;
+        margin: 0px;
+        max-width: 100vw;
+      }
+
       .section {
         display: inline-block;
         vertical-align: top;
@@ -13,30 +24,125 @@
       .exchange-type {
         margin-bottom: 10px;
       }
+
+      button {
+        background-color: #2acc97;
+        border: none;
+        padding: 8px 12px;
+        font-size: 14px;
+        color: white;
+        font-weight: 500;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      button:hover {
+        background-color: #12bd84;
+        box-shadow: 5px 10px;
+      }
+
+      .header {
+        background-color: #2acc97;
+        color: white;
+        padding: 15px 10px;
+        font-weight: 700;
+        font-size: 32px;
+      }
+
+      #cb1 {
+        accent-color: #2acc97;
+        width: 15px;
+        height: 15px;
+        margin-left: 0px;
+      }
+
+      #cb2 {
+        accent-color: #cc4a2a;
+        width: 15px;
+        height: 15px;
+      }
+
+      #cb3 {
+        accent-color: #2a4dcc;
+        width: 15px;
+        height: 15px;
+      }
+
+      #cb4 {
+        accent-color: #bf2acc;
+        width: 15px;
+        height: 15px;
+      }
+
+      .resolution-options {
+        display: flex;
+        align-items: center;
+      }
+
+      .container {
+        display: grid; 
+        grid-template-columns: repeat(2, minmax(0, 1fr)); 
+        grid-template-rows: repeat((x,max-content),1fr); 
+        width: 100%;
+        align-items: start;
+      }
+
+      img {
+        width: 100%;
+      }
+
+      textarea {
+        border-radius: 8px;
+        font-size: 14px;
+        padding: 6px;
+      }
+
+      textarea:focus {
+        outline-color: #2acc97;
+      }
     </style>
   </head>
   <body>
-    <h1>RabbitMQ Image Resize Producer And Consumer</h1>
-
-    <!-- Sender Section -->
-    <div class="section">
-      <h2>Image Resolution & URL</h2>
-      <form id="sender-form">
-        <div class="resolution-options">
-          <label>Resolution:</label>
-          <input type="checkbox" id="resolution1" name="resolution" value="2560x1440">
-          <label for="resolution1">2560x1440</label>
-          <input type="checkbox" id="resolution2" name="resolution" value="1920x1080">
-          <label for="resolution2">1920x1080</label>
-          <input type="checkbox" id="resolution3" name="resolution" value="1600x900">
-          <label for="resolution3">1600x900</label>
-          <input type="checkbox" id="resolution4" name="resolution" value="1280x720">
-          <label for "resolution4">1280x720</label>
+    <div class="header">
+      <span>RabbitMQ Image Resize Producer And Consumer</span>
+    </div>
+    <div class="container">
+      <div>
+        <!-- Sender Section -->
+        <div class="section">
+          <form id="sender-form">
+            <h2>Pick desired resolution(s):</h2>
+            <div class="resolution-options">
+              <input id="cb1" type="checkbox" id="resolution1" name="resolution" value="2560x1440">
+              <label for="resolution1" style="margin-right: 24px;">2560x1440</label>
+              <input id="cb2" type="checkbox" id="resolution2" name="resolution" value="1920x1080">
+              <label for="resolution2" style="margin-right: 24px;">1920x1080</label>
+              <input id="cb3" type="checkbox" id="resolution3" name="resolution" value="1600x900">
+              <label for="resolution3" style="margin-right: 24px;">1600x900</label>
+              <input id="cb4" type="checkbox" id="resolution4" name="resolution" value="1280x720">
+              <label for="resolution4">1280x720</label>
+            </div>
+            <h2 for="message">Enter an image URL</h2>
+            <textarea id="sender-message" name="sender-message" required></textarea><br /><br />
+            <button type="submit" id="sender-button">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4"></path>
+                <path d="M12 13l0 9"></path>
+                <path d="M9 19l3 3l3 -3"></path>
+              </svg>
+              <span style="margin-top: 2px; font-weight: 500;">Save</span>
+            </button>
+          </form>
         </div>
-        <label for="message">Image URL:</label>
-        <textarea id="sender-message" name="sender-message" required></textarea><br /><br />
-        <button type="submit" id="sender-button">Send Message</button>
-      </form>
+      </div>
+      <div>
+        <img src="img.png" alt="image">
+      </div>
     </div>
 
     <script>
