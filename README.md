@@ -1,6 +1,6 @@
 # ATU Message Queue<br>
 ## Introduction
-This is a small application developed as a part of Software Architecture course's project. ATU Message Queue allows users to download image with specific resolution. 
+This is a small application developed by Hoang An, Minh Tuan and Hanh Uyen as a part of Software Architecture course's project. ATU Message Queue allows users to download image with specific resolution. 
 All things users need to do is to enter an image URL and choose desired resolutions.<br>
 ## Installation
 Prerequisites: Nodejs, Docker
