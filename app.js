@@ -19,11 +19,14 @@ app.get("/", (req, res) => {
 const wss = new WebSocket.Server({ noServer: true });
 
 wss.on("connection", (ws) => {
+  console.log("create WebSocket Connection")
   ws.on("message", (message) => {
     // Handle WebSocket messages from the web clients
+    
     var data = JSON.parse(message);
     const selectedRes = data.selectedResolutions;
     const imgURL = data.imageUrl;
+    console.log('receive data from client: ' + selectedRes + '-' + imgURL);
 
     for (const resolution of selectedRes) {
       const routingKey = `resolution.${resolution}`;
@@ -48,7 +51,7 @@ async function sendTopicMessage(exchange, routingKey, message) {
   const channel = await connection.createChannel();
 
   // Declare a topic exchange
-  await channel.assertExchange(exchange, "topic", { durable: false });
+  await channel.assertExchange(exchange, "topic", { durable: true });
 
   // Publish the message with a specific routing key (resolution)
   channel.publish(exchange, routingKey, Buffer.from(message));
@@ -62,7 +65,7 @@ async function createTopicSubscriber(exchange, bindingKey) {
   const channel = await connection.createChannel();
 
   // Declare a topic exchange
-  await channel.assertExchange(exchange, "topic", { durable: false });
+  await channel.assertExchange(exchange, "topic", { durable: true });
 
   // Declare a queue with a specific name for the binding key (resolution)
   await channel.assertQueue(bindingKey, { exclusive: true });
@@ -77,12 +80,14 @@ async function createTopicSubscriber(exchange, bindingKey) {
     bindingKey,
     async (msg) => {
       try {
+        console.log('consume message');
         const urlRes = await resizeAndUpload(
           bindingKey.split(".")[1],
           msg.content.toString()
         );
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
+            console.log('send data to client ' + urlRes + '-' + bindingKey);
             client.send(JSON.stringify({ urlRes, bindingKey }));
           }
         });

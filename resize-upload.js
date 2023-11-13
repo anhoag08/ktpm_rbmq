@@ -22,6 +22,7 @@ exports.resizeAndUpload = async (res, url) => {
 
 const downloadImageAndResize = async (url, path, res) => {
   try {
+    console.log('downloading image ' + url);
     const response = await axios.get(url, {
       responseType: "stream",
     });
@@ -37,6 +38,7 @@ const downloadImageAndResize = async (url, path, res) => {
     });
 
     const wh = res.split("x");
+    console.log('resizing image - ' + path);
 
     // Resize the image to the specified resolution
     await sharp(path)
