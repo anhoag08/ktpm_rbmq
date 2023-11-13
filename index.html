@@ -84,9 +84,9 @@
       }
 
       .container {
-        display: grid; 
-        grid-template-columns: repeat(2, minmax(0, 1fr)); 
-        grid-template-rows: repeat((x,max-content),1fr); 
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat((x, max-content), 1fr);
         width: 100%;
         align-items: start;
       }
@@ -117,60 +117,129 @@
           <form id="sender-form">
             <h2>Pick desired resolution(s):</h2>
             <div class="resolution-options">
-              <input id="cb1" type="checkbox" id="resolution1" name="resolution" value="2560x1440">
-              <label for="resolution1" style="margin-right: 24px;">2560x1440</label>
-              <input id="cb2" type="checkbox" id="resolution2" name="resolution" value="1920x1080">
-              <label for="resolution2" style="margin-right: 24px;">1920x1080</label>
-              <input id="cb3" type="checkbox" id="resolution3" name="resolution" value="1600x900">
-              <label for="resolution3" style="margin-right: 24px;">1600x900</label>
-              <input id="cb4" type="checkbox" id="resolution4" name="resolution" value="1280x720">
+              <input
+                id="cb1"
+                type="checkbox"
+                id="resolution1"
+                name="resolution"
+                value="2560x1440"
+              />
+              <label for="resolution1" style="margin-right: 24px"
+                >2560x1440</label
+              >
+              <input
+                id="cb2"
+                type="checkbox"
+                id="resolution2"
+                name="resolution"
+                value="1920x1080"
+              />
+              <label for="resolution2" style="margin-right: 24px"
+                >1920x1080</label
+              >
+              <input
+                id="cb3"
+                type="checkbox"
+                id="resolution3"
+                name="resolution"
+                value="1600x900"
+              />
+              <label for="resolution3" style="margin-right: 24px"
+                >1600x900</label
+              >
+              <input
+                id="cb4"
+                type="checkbox"
+                id="resolution4"
+                name="resolution"
+                value="1280x720"
+              />
               <label for="resolution4">1280x720</label>
             </div>
             <h2 for="message">Enter an image URL</h2>
-            <textarea id="sender-message" name="sender-message" required></textarea><br /><br />
+            <textarea
+              id="sender-message"
+              name="sender-message"
+              required
+            ></textarea
+            ><br /><br />
             <button type="submit" id="sender-button">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-cloud-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon icon-tabler icon-tabler-cloud-download"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4"></path>
+                <path
+                  d="M19 18a3.5 3.5 0 0 0 0 -7h-1a5 4.5 0 0 0 -11 -2a4.6 4.4 0 0 0 -2.1 8.4"
+                ></path>
                 <path d="M12 13l0 9"></path>
                 <path d="M9 19l3 3l3 -3"></path>
               </svg>
-              <span style="margin-top: 2px; font-weight: 500;">Save</span>
+              <span style="margin-top: 2px; font-weight: 500">Save</span>
             </button>
           </form>
         </div>
       </div>
       <div>
-        <img src="img.png" alt="image">
+        <img src="img.png" alt="image" />
       </div>
     </div>
 
     <script>
       const senderForm = document.getElementById("sender-form");
       const senderButton = document.getElementById("sender-button");
-      const socket = new WebSocket('ws://localhost:3000'); // WebSocket server address
+      const socket = new WebSocket("ws://localhost:3000"); // WebSocket server address
 
-    
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        const urlRes = data.urlRes;
+        const resolution = data.bindingKey.split(".")[1];
+
+        // Handle urlRes in your front end (e.g., update the UI)
+        console.log(urlRes);
+        fetch(urlRes)
+          .then((res) => res.blob())
+          .then((file) => {
+            let tempUrl = URL.createObjectURL(file);
+            let aTag = document.createElement("a");
+            aTag.href = tempUrl;
+            aTag.download = "image-" + resolution;
+            document.body.appendChild(aTag);
+            aTag.click();
+            aTag.remove();
+          });
+      };
+
       senderForm.addEventListener("submit", (event) => {
         event.preventDefault();
-    
+
         // Get the selected resolutions
         const selectedResolutions = [];
-        const resolutionCheckboxes = document.querySelectorAll('input[name="resolution"]:checked');
+        const resolutionCheckboxes = document.querySelectorAll(
+          'input[name="resolution"]:checked'
+        );
         resolutionCheckboxes.forEach((checkbox) => {
           selectedResolutions.push(checkbox.value);
         });
-    
+
         // Get the image URL
         const imageUrl = document.getElementById("sender-message").value;
-    
+
         // Handle the selected resolutions and URL as needed
         if (selectedResolutions.length === 0) {
           alert("Please select at least one resolution.");
         } else {
           // You can send the resolutions and URL to your server or perform any other action here.
           // For demonstration, we'll display the selected resolutions in an alert.
-          socket.send(JSON.stringify({selectedResolutions, imageUrl}));
+          socket.send(JSON.stringify({ selectedResolutions, imageUrl }));
         }
       });
     </script>

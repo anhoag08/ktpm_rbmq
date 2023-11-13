@@ -81,6 +81,11 @@ async function createTopicSubscriber(exchange, bindingKey) {
           bindingKey.split(".")[1],
           msg.content.toString()
         );
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ urlRes, bindingKey }));
+          }
+        });
       } catch (error) {
         console.error(error);
       }
