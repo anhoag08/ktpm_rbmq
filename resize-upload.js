@@ -5,20 +5,16 @@ const imgbbUploader = require("imgbb-uploader");
 
 exports.resizeAndUpload = async (res, url) => {
   const outputPath = `./${res}/img.jpg`;
+  let resultResponse;
   try {
-    downloadImageAndResize(url, outputPath, res)
-      .then(async () => {
-        try {
-          const response = await this.upload(outputPath);
-          console.log(response)
-          return response;
-        } catch (error) {
-          throw error; // Rethrow the error to be caught in the calling code
-        }
-      })
-      .catch((err) => {
-        console.error("Error downloading and resizing the image:", err);
-      });
+    await downloadImageAndResize(url, outputPath, res);
+    try {
+      const uploadRes = await upload(outputPath)
+      resultResponse = uploadRes;
+    } catch (error) {
+      throw error; // Rethrow the error to be caught in the calling code
+    }
+    return resultResponse;
   } catch (error) {
     console.error("Error downloading and resizing the image:", error);
   }
@@ -52,7 +48,7 @@ const downloadImageAndResize = async (url, path, res) => {
   }
 };
 
-exports.upload = async (outputPath) => {
+const upload = async (outputPath) => {
   try {
     const response = await imgbbUploader(
       "4b5afd5caf4c66ab6f10a723d2e48cbe",

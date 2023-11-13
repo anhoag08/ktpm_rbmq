@@ -77,11 +77,10 @@ async function createTopicSubscriber(exchange, bindingKey) {
     bindingKey,
     async (msg) => {
       try {
-        const result = await resizeAndUpload(
+        const urlRes = await resizeAndUpload(
           bindingKey.split(".")[1],
           msg.content.toString()
         );
-        console.log(result); // Use the result here
       } catch (error) {
         console.error(error);
       }
